@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+E:\mission-project-04\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3481351218.index
+2275631528.index
+18279965.index
+1251512835.index
+1303676473.index
+2591647666.index
+667821660.index

@@ -1,0 +1,356 @@
+package in.co.rays.proj4.model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import in.co.rays.proj4.bean.ServerMonitorBean;
+import in.co.rays.proj4.exception.ApplicationException;
+import in.co.rays.proj4.exception.DatabaseException;
+import in.co.rays.proj4.exception.DuplicateRecordException;
+import in.co.rays.proj4.util.JDBCDataSource;
+
+public class ServerMonitorModel {
+
+	// FIX 1
+	Logger log = Logger.getLogger(ServerMonitorModel.class);
+
+	public Integer nextPk() throws DatabaseException {
+
+		log.debug("nextPk Method Started");
+
+		Connection conn = null;
+		int pk = 0;
+
+		try {
+
+			conn = JDBCDataSource.getConnection();
+
+			PreparedStatement pstmt =
+					conn.prepareStatement(
+					"select max(id) from servermonitor");
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				pk = rs.getInt(1);
+			}
+
+			rs.close();
+			pstmt.close();
+
+		} catch(Exception e) {
+
+			throw new DatabaseException(
+					"Exception in getting PK");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(conn);
+		}
+
+		return pk + 1;
+	}
+
+
+	public long add(ServerMonitorBean bean)
+			throws ApplicationException,
+			DuplicateRecordException {
+
+		Connection conn = null;
+
+		int pk = 0;
+
+		try {
+
+			pk = nextPk();
+
+			conn = JDBCDataSource.getConnection();
+
+			conn.setAutoCommit(false);
+
+			PreparedStatement pstmt =
+					conn.prepareStatement(
+					"insert into servermonitor values(?,?,?,?,?)");
+
+			pstmt.setInt(1, pk);
+			pstmt.setDouble(2, bean.getCpuUsage());
+			pstmt.setDouble(3, bean.getRamUsage());
+			pstmt.setString(4, bean.getStatus());
+			pstmt.setLong(5, bean.getUptime());
+
+			pstmt.executeUpdate();
+
+			conn.commit();
+
+			pstmt.close();
+
+		} catch(Exception e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch(Exception ex) {
+
+				throw new ApplicationException(
+						"Rollback Exception");
+
+			}
+
+			throw new ApplicationException(
+					"Exception in Add");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(conn);
+		}
+
+		return pk;
+	}
+
+
+	public void update(ServerMonitorBean bean)
+			throws DuplicateRecordException,
+			ApplicationException {
+
+		Connection conn = null;
+
+		try {
+
+			conn = JDBCDataSource.getConnection();
+
+			conn.setAutoCommit(false);
+
+			PreparedStatement pstmt =
+					conn.prepareStatement(
+
+			"update servermonitor set cpuUsage=?,ramUsage=?,status=?,upTime=? where id=?");
+
+			// FIX 2
+			pstmt.setDouble(1, bean.getCpuUsage());
+			pstmt.setDouble(2, bean.getRamUsage());
+			pstmt.setString(3, bean.getStatus());
+			pstmt.setLong(4, bean.getUptime());
+			pstmt.setInt(5, bean.getServerId());
+
+			pstmt.executeUpdate();
+
+			conn.commit();
+
+			pstmt.close();
+
+		} catch(Exception e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch(Exception ex) {
+
+				throw new ApplicationException(
+						"Rollback Exception");
+
+			}
+
+			throw new ApplicationException(
+					"Exception in Update");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(conn);
+		}
+	}
+
+
+	public void delete(ServerMonitorBean bean)
+			throws ApplicationException {
+
+		Connection conn = null;
+
+		try {
+
+			conn = JDBCDataSource.getConnection();
+
+			conn.setAutoCommit(false);
+
+			PreparedStatement pstmt =
+					conn.prepareStatement(
+					"delete from servermonitor where id=?");
+
+			// FIX 3
+			pstmt.setInt(1,
+					bean.getServerId());
+
+			pstmt.executeUpdate();
+
+			conn.commit();
+
+			pstmt.close();
+
+		} catch(Exception e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch(Exception ex) {
+
+				throw new ApplicationException(
+						"Rollback Exception");
+
+			}
+
+			throw new ApplicationException(
+					"Exception in Delete");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(conn);
+		}
+	}
+
+
+	public ServerMonitorBean findByPk(long pk)
+			throws ApplicationException {
+
+		Connection conn = null;
+
+		ServerMonitorBean bean = null;
+
+		try {
+
+			conn = JDBCDataSource.getConnection();
+
+			PreparedStatement pstmt =
+					conn.prepareStatement(
+					"select * from servermonitor where id=?");
+
+			pstmt.setLong(1, pk);
+
+			ResultSet rs =
+					pstmt.executeQuery();
+
+			while(rs.next()) {
+
+				bean =
+				new ServerMonitorBean();
+
+				bean.setServerId(rs.getInt(1));
+				bean.setCpuUsage(rs.getDouble(2));
+				bean.setRamUsage(rs.getDouble(3));
+				bean.setStatus(rs.getString(4));
+				bean.setUptime(rs.getLong(5));
+
+			}
+
+			rs.close();
+			pstmt.close();
+
+		} catch(Exception e) {
+
+			throw new ApplicationException(
+					"Exception in FindByPk");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(conn);
+		}
+
+		return bean;
+	}
+
+
+	public List search(
+			ServerMonitorBean bean,
+			int pageNo,
+			int pageSize)
+			throws ApplicationException {
+
+		Connection conn = null;
+
+		ArrayList list =
+				new ArrayList();
+
+		StringBuffer sql =
+				new StringBuffer(
+				"select * from servermonitor where 1=1");
+
+		if(bean != null){
+
+			if(bean.getServerId()>0){
+
+				sql.append(
+				" and id="+
+				bean.getServerId());
+			}
+
+			if(bean.getStatus()!=null
+			&& bean.getStatus().length()>0){
+
+				sql.append(
+				" and status like '"
+				+bean.getStatus()
+				+"%'");
+			}
+		}
+
+		// FIX 4 (move outside if(bean!=null))
+		if(pageSize>0){
+
+			pageNo =
+			(pageNo-1)*pageSize;
+
+			sql.append(
+			" limit "
+			+pageNo+","
+			+pageSize);
+		}
+
+		try{
+
+			conn=
+			JDBCDataSource.getConnection();
+
+			PreparedStatement pstmt=
+					conn.prepareStatement(
+					sql.toString());
+
+			ResultSet rs=
+					pstmt.executeQuery();
+
+			while(rs.next()){
+
+				ServerMonitorBean b=
+						new ServerMonitorBean();
+
+				b.setServerId(rs.getInt(1));
+				b.setCpuUsage(rs.getDouble(2));
+				b.setRamUsage(rs.getDouble(3));
+				b.setStatus(rs.getString(4));
+				b.setUptime(rs.getLong(5));
+
+				list.add(b);
+
+			}
+
+			rs.close();
+			pstmt.close();
+
+		}catch(Exception e){
+
+			throw new ApplicationException(
+					"Exception in Search");
+
+		}finally{
+
+			JDBCDataSource.closeConnection(conn);
+		}
+
+		return list;
+	}
+}

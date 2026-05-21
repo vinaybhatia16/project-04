@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="in.co.rays.proj4.controller.ORSView"/>
+    <fullyQualifiedTypeName name="java.io.IOException"/>
+    <fullyQualifiedTypeName name="org.apache.log4j.Logger"/>
+    <fullyQualifiedTypeName name="in.co.rays.proj4.controller.BaseCtl"/>
+    <fullyQualifiedTypeName name="in.co.rays.proj4.bean.BaseBean"/>
+    <fullyQualifiedTypeName name="in.co.rays.proj4.model.ServerMonitorModel"/>
+    <fullyQualifiedTypeName name="in.co.rays.proj4.bean.ServerMonitorBean"/>
+</qualifiedTypeNameHistroy>

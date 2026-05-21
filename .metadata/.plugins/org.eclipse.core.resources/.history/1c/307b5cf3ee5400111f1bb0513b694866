@@ -1,0 +1,157 @@
+package in.co.rays.proj4.controller;
+
+/**
+ * Contains Online Result System (ORS) View and Controller navigation definitions.
+ * Provides logical constant mappings for application routing paths, JSP layouts, 
+ * and Servlet URL endpoints.
+ * 
+ * @author vinay
+ * @version 1.0
+ */
+public interface ORSView {
+
+	/** The root context path string for the web deployment module. */
+	public String APP_CONTEXT = "/ORSProject-04";
+
+	/** Base directory path pointing to structural view pages (.jsp). */
+	public String PAGE_FOLDER = "/jsp";
+
+	/** Relative location string tracking the compiled JavaDoc document directory. */
+	public String JAVA_DOC = APP_CONTEXT + "/doc/index.html";
+
+	/** Path definition tracking Welcome landing interface. */
+	public String WELCOME_VIEW = PAGE_FOLDER + "/Welcome.jsp";
+	/** Context binding mapping the Welcome feature controller servlet. */
+	public String WELCOME_CTL = APP_CONTEXT + "/WelcomeCtl";
+
+	/** Path definition tracking User Self-Registration layout. */
+	public String USER_REGISTRATION_VIEW = PAGE_FOLDER + "/UserRegistrationView.jsp";
+	/** Context binding mapping the User Self-Registration processing servlet. */
+	public String USER_REGISTRATION_CTL = APP_CONTEXT + "/UserRegistrationCtl";
+
+	/** Path definition tracking User Login interface. */
+	public String LOGIN_VIEW = PAGE_FOLDER + "/LoginView.jsp";
+	/** Context binding mapping the User Login processing servlet. */
+	public String LOGIN_CTL = APP_CONTEXT + "/LoginCtl";
+
+	/** Path definition tracking explicit Marksheet retrieval view. */
+	public String GET_MARKSHEET_VIEW = PAGE_FOLDER + "/GetMarksheetView.jsp";
+	/** Context binding mapping the explicit Marksheet query processing servlet. */
+	public String GET_MARKSHEET_CTL = APP_CONTEXT + "/ctl/GetMarksheetCtl";
+
+	/** Path definition tracking Marksheet Merit List layout. */
+	public String MARKSHEET_MERIT_LIST_VIEW = PAGE_FOLDER + "/MarksheetMeritListView.jsp";
+	/** Context binding mapping the Marksheet Merit List processor servlet. */
+	public String MARKSHEET_MERIT_LIST_CTL = APP_CONTEXT + "/ctl/MarksheetMeritListCtl";
+
+	/** Path definition tracking User detailed profile CRUD view. */
+	public String USER_VIEW = PAGE_FOLDER + "/UserView.jsp";
+	/** Context binding mapping the operational User data controller servlet. */
+	public String USER_CTL = APP_CONTEXT + "/UserCtl";
+
+	/** Path definition tracking User search and list display tabular layout. */
+	public String USER_LIST_VIEW = PAGE_FOLDER + "/UserListView.jsp";
+	/** Context binding mapping the User collection tracking manager servlet. */
+	public String USER_LIST_CTL = APP_CONTEXT + "/UserListCtl";
+
+	/** Path definition tracking security Access Role management view. */
+	public String ROLE_VIEW = PAGE_FOLDER + "/RoleView.jsp";
+	/** Context binding mapping the security Access Role controller servlet. */
+	public String ROLE_CTL = APP_CONTEXT + "/ctl/RoleCtl";
+
+	/** Path definition tracking security Access Role listing view. */
+	public String ROLE_LIST_VIEW = PAGE_FOLDER + "/RoleListView.jsp";
+	/** Context binding mapping the security Access Role listing collector servlet. */
+	public String ROLE_LIST_CTL = APP_CONTEXT + "/ctl/RoleListCtl";
+
+	/** Path definition tracking College data structural view. */
+	public String COLLEGE_VIEW = PAGE_FOLDER + "/CollegeView.jsp";
+	/** Context binding mapping the structural College metadata processor servlet. */
+	public String COLLEGE_CTL = APP_CONTEXT + "/ctl/CollegeCtl";
+
+	/** Path definition tracking College records browsing and index view. */
+	public String COLLEGE_LIST_VIEW = PAGE_FOLDER + "/CollegeListView.jsp";
+	/** Context binding mapping the College collection directory navigation servlet. */
+	public String COLLEGE_LIST_CTL = APP_CONTEXT + "/ctl/CollegeListCtl";
+
+	/** Path definition tracking Student enrollment record view. */
+	public String STUDENT_VIEW = PAGE_FOLDER + "/StudentView.jsp";
+	/** Context binding mapping the Student transaction profile processor servlet. */
+	public String STUDENT_CTL = APP_CONTEXT + "/ctl/StudentCtl";
+
+	/** Path definition tracking Student master registry summary list. */
+	public String STUDENT_LIST_VIEW = PAGE_FOLDER + "/StudentListView.jsp";
+	/** Context binding mapping the Student collection indexing processor servlet. */
+	public String STUDENT_LIST_CTL = APP_CONTEXT + "/ctl/StudentListCtl";
+
+	/** Path definition tracking detailed Student academic Marksheet data view. */
+	public String MARKSHEET_VIEW = PAGE_FOLDER + "/MarksheetView.jsp";
+	/** Context binding mapping the individual student Marksheet operation servlet. */
+	public String MARKSHEET_CTL = APP_CONTEXT + "/ctl/MarksheetCtl";
+
+	/** Path definition tracking multi-record Marksheet grid ledger view. */
+	public String MARKSHEET_LIST_VIEW = PAGE_FOLDER + "/MarksheetListView.jsp";
+	/** Context binding mapping the multi-record Marksheet directory processor servlet. */
+	public String MARKSHEET_LIST_CTL = APP_CONTEXT + "/ctl/MarksheetListCtl";
+
+	/** Path definition tracking academic Program Course profile view. */
+	public String COURSE_VIEW = PAGE_FOLDER + "/CourseView.jsp";
+	/** Context binding mapping the academic Program Course operation handler servlet. */
+	public String COURSE_CTL = APP_CONTEXT + "/ctl/CourseCtl";
+
+	/** Path definition tracking Course catalog indexes tabular list view. */
+	public String COURSE_LIST_VIEW = PAGE_FOLDER + "/CourseListView.jsp";
+	/** Context binding mapping the Course collection dashboard data collector servlet. */
+	public String COURSE_LIST_CTL = APP_CONTEXT + "/ctl/CourseListCtl";
+
+	/** Path definition tracking Course Subject module schema form view. */
+	public String SUBJECT_VIEW = PAGE_FOLDER + "/SubjectView.jsp";
+	/** Context binding mapping the Course Subject unit modifier process servlet. */
+	public String SUBJECT_CTL = APP_CONTEXT + "/SubjectCtl";
+
+	/** Path definition tracking Subject inventory data view layout. */
+	public String SUBJECT_LIST_VIEW = PAGE_FOLDER + "/SubjectListView.jsp";
+	/** Context binding mapping the Subject catalog listing navigation controller servlet. */
+	public String SUBJECT_LIST_CTL = APP_CONTEXT + "/SubjectListCtl";
+
+	/** Path definition tracking Academic Semester Timetable allocation sheet view. */
+	public String TIMETABLE_VIEW = PAGE_FOLDER + "/TimetableView.jsp";
+	/** Context binding mapping the Academic Semester Timetable scheduler controller servlet. */
+	public String TIMETABLE_CTL = APP_CONTEXT + "/ctl/TimetableCtl";
+
+	/** Path definition tracking Timetable compilation grid layout view. */
+	public String TIMETABLE_LIST_VIEW = PAGE_FOLDER + "/TimetableListView.jsp";
+	/** Context binding mapping the Timetable sequence catalog list collector servlet. */
+	public String TIMETABLE_LIST_CTL = APP_CONTEXT + "/ctl/TimetableListCtl";
+
+	/** Path definition tracking institutional Faculty profile modifier workspace view. */
+	public String FACULTY_VIEW = PAGE_FOLDER + "/FacultyView.jsp";
+	/** Context binding mapping the institutional Faculty human resource controller servlet. */
+	public String FACULTY_CTL = APP_CONTEXT + "/ctl/FacultyCtl";
+
+	/** Path definition tracking Faculty ledger listings summary grid layout view. */
+	public String FACULTY_LIST_VIEW = PAGE_FOLDER + "/FacultyListView.jsp";
+	/** Context binding mapping the Faculty directory registry navigation controller servlet. */
+	public String FACULTY_LIST_CTL = APP_CONTEXT + "/ctl/FacultyListCtl";
+
+	/** Path definition tracking credential recovery Password Forget workflow page. */
+	public String FORGET_PASSWORD_VIEW = PAGE_FOLDER + "/ForgetPasswordView.jsp";
+	/** Context binding mapping the credential recovery Password Forget token processor servlet. */
+	public String FORGET_PASSWORD_CTL = APP_CONTEXT + "/ForgetPasswordCtl";
+
+	/** Path definition tracking current User Identity self profile form view. */
+	public String MY_PROFILE_VIEW = PAGE_FOLDER + "/MyProfileView.jsp";
+	/** Context binding mapping the current User Identity self profile modifier servlet. */
+	public String MY_PROFILE_CTL = APP_CONTEXT + "/ctl/MyProfileCtl";
+
+	/** Path definition tracking account security Password Modification view page. */
+	public String CHANGE_PASSWORD_VIEW = PAGE_FOLDER + "/ChangePasswordView.jsp";
+	/** Context binding mapping the account security Password Modification engine servlet. */
+	public String CHANGE_PASSWORD_CTL = APP_CONTEXT + "/ctl/ChangePasswordCtl";
+
+	/** Path definition tracking generic global Error messaging presentation viewport. */
+	public String ERROR_VIEW = PAGE_FOLDER + "/ErrorView.jsp";
+	/** Context binding mapping the generic global Error interception handler servlet. */
+	public String ERROR_CTL = APP_CONTEXT + "/ErrorCtl";
+
+}

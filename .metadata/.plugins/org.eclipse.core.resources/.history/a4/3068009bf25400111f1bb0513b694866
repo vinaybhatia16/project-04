@@ -1,0 +1,255 @@
+package in.co.rays.proj4.model;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import in.co.rays.proj4.bean.ServerMonitorBean;
+import in.co.rays.proj4.exception.ApplicationException;
+import in.co.rays.proj4.exception.DatabaseException;
+import in.co.rays.proj4.exception.DuplicateRecordException;
+import in.co.rays.proj4.util.JDBCDataSource;
+
+/**
+ * UserModel class handles all database operations related to User.
+ * 
+ * It provides methods for: - CRUD operations (Add, Update, Delete) -
+ * Authentication - Password management (change/forget) - Search with pagination
+ * - User registration with email notification
+ * 
+ * This class interacts with ST_USER table.
+ * 
+ * @author Ram
+ */
+public class ServerMonitorModel {
+
+	Logger log = Logger.getLogger(UserModel.class);
+
+	/**
+	 * Generates next primary key for ST_USER table.
+	 * 
+	 * @return next primary key
+	 * @throws DatabaseException
+	 */
+	public Integer nextPk() throws DatabaseException {
+
+		log.debug("nextPk is called");
+
+		Connection conn = null;
+		int pk = 0;
+
+		try {
+			conn = JDBCDataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement("select max(id) from servermonitor");
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				pk = rs.getInt(1);
+			}
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			throw new DatabaseException("Exception : Exception in getting PK");
+		} finally {
+			JDBCDataSource.closeConnection(conn);
+		}
+		return pk + 1;
+	}
+
+	/**
+	 * Adds a new user record.
+	 * 
+	 * @param bean UserBean containing user data
+	 * @return generated primary key
+	 * @throws ApplicationException
+	 * @throws DuplicateRecordException if login already exists
+	 */
+	public long add(ServerMonitorBean bean) throws ApplicationException, DuplicateRecordException {
+
+		Connection conn = null;
+		int pk = 0;
+
+		try {
+			pk = nextPk();
+			conn = JDBCDataSource.getConnection();
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement("insert into servermonitor values(?, ?, ?, ?, ?)");
+			pstmt.setInt(1, pk);
+			pstmt.setDouble(2, bean.getCpuUsage());
+			pstmt.setDouble(3, bean.getRamUsage());
+			pstmt.setString(4, bean.getStatus());
+			pstmt.setLong(5, bean.getUptime());
+			pstmt.executeUpdate();
+			conn.commit();
+			pstmt.close();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				throw new ApplicationException("Exception : add rollback exception " + ex.getMessage());
+			}
+			throw new ApplicationException("Exception : Exception in add User");
+		} finally {
+			JDBCDataSource.closeConnection(conn);
+		}
+		return pk;
+	}
+
+	/**
+	 * Updates an existing user record.
+	 * 
+	 * @param bean UserBean with updated data
+	 * @throws DuplicateRecordException if login already exists
+	 * @throws ApplicationException
+	 */
+	public void update(ServerMonitorBean bean) throws DuplicateRecordException, ApplicationException {
+
+		Connection conn = null;
+
+		try {
+			conn = JDBCDataSource.getConnection();
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement(
+					"update servermonitor set cpuUsage = ?, ramUsage = ?, status = ?, upTime = ? where id = ?");
+
+			pstmt.setDouble(2, bean.getCpuUsage());
+			pstmt.setDouble(3, bean.getRamUsage());
+			pstmt.setString(4, bean.getStatus());
+			pstmt.setLong(5, bean.getUptime());
+			pstmt.setInt(5, bean.getServerId());
+			pstmt.executeUpdate();
+			conn.commit();
+			pstmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				conn.rollback();
+			} catch (Exception ex) {
+				throw new ApplicationException("Exception : Delete rollback exception " + ex.getMessage());
+			}
+			throw new ApplicationException("Exception in updating User ");
+		} finally {
+			JDBCDataSource.closeConnection(conn);
+		}
+	}
+
+	/**
+	 * Deletes a user record.
+	 * 
+	 * @param bean UserBean containing ID
+	 * @throws ApplicationException
+	 */
+	public void delete(ServerMonitorBean bean) throws ApplicationException {
+
+		Connection conn = null;
+
+		try {
+			conn = JDBCDataSource.getConnection();
+			conn.setAutoCommit(false);
+			PreparedStatement pstmt = conn.prepareStatement("delete from servermonitor where id = ?");
+			pstmt.setInt(5, bean.getServerId());
+			pstmt.executeUpdate();
+			conn.commit();
+			pstmt.close();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (Exception ex) {
+				throw new ApplicationException("Exception : Delete rollback exception " + ex.getMessage());
+			}
+			throw new ApplicationException("Exception : Exception in delete User");
+		} finally {
+			JDBCDataSource.closeConnection(conn);
+		}
+	}
+
+	/**
+	 * Finds user by primary key.
+	 * 
+	 * @param pk user ID
+	 * @return UserBean
+	 * @throws ApplicationException
+	 */
+	public ServerMonitorBean findByPk(long pk) throws ApplicationException {
+
+		ServerMonitorBean bean = null;
+		Connection conn = null;
+
+		StringBuffer sql = new StringBuffer("select * from servermonitor where id = ?");
+
+		try {
+			conn = JDBCDataSource.getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setLong(1, pk);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				bean = new ServerMonitorBean();
+				bean.setServerId(rs.getInt(1));
+				bean.setCpuUsage(rs.getDouble(2));
+				bean.setRamUsage(rs.getDouble(3));
+				bean.setStatus(rs.getString(4));
+				bean.setUptime(rs.getLong(5));
+
+			}
+			rs.close();
+			pstmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ApplicationException("Exception : Exception in getting User by pk");
+		} finally {
+			JDBCDataSource.closeConnection(conn);
+		}
+		return bean;
+	}
+
+	public List<ServerMonitorBean> search(ServerMonitorBean bean, int pageNo, int pageSize)
+			throws ApplicationException {
+
+		Connection conn = null;
+		ArrayList<ServerMonitorBean> list = new ArrayList<ServerMonitorBean>();
+
+		StringBuffer sql = new StringBuffer("select * from servermonitor where 1=1");
+
+		if (bean != null) {
+			if (bean.getServerId() > 0) {
+				sql.append(" and id = " + bean.getServerId());
+			}
+			if (bean.getStatus() != null && bean.getStatus().length() > 0) {
+				sql.append(" and status like '" + bean.getStatus() + "%'");
+			}
+
+			if (pageSize > 0) {
+				pageNo = (pageNo - 1) * pageSize;
+				sql.append(" limit " + pageNo + ", " + pageSize);
+			}
+
+			try {
+				conn = JDBCDataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					bean = new ServerMonitorBean();
+					bean.setServerId(rs.getInt(1));
+					bean.setCpuUsage(rs.getDouble(2));
+					bean.setRamUsage(rs.getDouble(3));
+					bean.setStatus(rs.getString(4));
+					bean.setUptime(rs.getLong(5));
+					list.add(bean);
+				}
+				rs.close();
+				pstmt.close();
+			} catch (Exception e) {
+				throw new ApplicationException("Exception : Exception in search user");
+			} finally {
+				JDBCDataSource.closeConnection(conn);
+			}
+
+		}
+		return list;
+
+	}
+}

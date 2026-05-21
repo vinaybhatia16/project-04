@@ -1,0 +1,49 @@
+package in.co.rays.proj4.bean;
+
+public class ServerMonitorBean extends BaseBean {
+	public int getServerId() {
+		return serverId;
+	}
+	public void setServerId(int serverId) {
+		this.serverId = serverId;
+	}
+	public double getCpuUsage() {
+		return cpuUsage;
+	}
+	public void setCpuUsage(double cpuUsage) {
+		this.cpuUsage = cpuUsage;
+	}
+	public double getRamUsage() {
+		return ramUsage;
+	}
+	public void setRamUsage(double ramUsage) {
+		this.ramUsage = ramUsage;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public long getUptime() {
+		return uptime;
+	}
+	public void setUptime(long uptime) {
+		this.uptime = uptime;
+	}
+	private double cpuUsage;
+	private double ramUsage;
+	private String status;
+	private long uptime;
+	private int serverId;
+	@Override
+	public String getKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
